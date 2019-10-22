@@ -1,6 +1,7 @@
 package coinbasepro
 
 import (
+	"context"
 	"errors"
 	"testing"
 )
@@ -15,7 +16,7 @@ func TestCreateLimitOrders(t *testing.T) {
 		ProductID: "BTC-USD",
 	}
 
-	savedOrder, err := client.CreateOrder(&order)
+	savedOrder, err := client.CreateOrder(context.Background(), &order)
 	if err != nil {
 		t.Error(err)
 	}
@@ -30,7 +31,7 @@ func TestCreateLimitOrders(t *testing.T) {
 		t.Error(err)
 	}
 
-	if err := client.CancelOrder(savedOrder.ID); err != nil {
+	if err := client.CancelOrder(context.Background(), savedOrder.ID); err != nil {
 		t.Error(err)
 	}
 }
@@ -46,7 +47,7 @@ func TestCreateMarketOrders(t *testing.T) {
 		ProductID: "BTC-USD",
 	}
 
-	savedOrder, err := client.CreateOrder(&order)
+	savedOrder, err := client.CreateOrder(context.Background(), &order)
 	if err != nil {
 		t.Error(err)
 	}
@@ -72,12 +73,12 @@ func TestCancelOrder(t *testing.T) {
 		ProductID: "BTC-USD",
 	}
 
-	savedOrder, err := client.CreateOrder(&order)
+	savedOrder, err := client.CreateOrder(context.Background(), &order)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if err := client.CancelOrder(savedOrder.ID); err != nil {
+	if err := client.CancelOrder(context.Background(), savedOrder.ID); err != nil {
 		t.Error(err)
 		t.Error(err)
 	}
@@ -93,12 +94,12 @@ func TestGetOrder(t *testing.T) {
 		ProductID: "BTC-USD",
 	}
 
-	savedOrder, err := client.CreateOrder(&order)
+	savedOrder, err := client.CreateOrder(context.Background(), &order)
 	if err != nil {
 		t.Error(err)
 	}
 
-	getOrder, err := client.GetOrder(savedOrder.ID)
+	getOrder, err := client.GetOrder(context.Background(), savedOrder.ID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -107,14 +108,14 @@ func TestGetOrder(t *testing.T) {
 		t.Error(errors.New("Order ids do not match"))
 	}
 
-	if err := client.CancelOrder(savedOrder.ID); err != nil {
+	if err := client.CancelOrder(context.Background(), savedOrder.ID); err != nil {
 		t.Error(err)
 	}
 }
 
 func TestListOrders(t *testing.T) {
 	client := NewTestClient()
-	cursor := client.ListOrders()
+	cursor := client.ListOrders(context.Background())
 	var orders []Order
 
 	for cursor.HasMore {
@@ -129,7 +130,7 @@ func TestListOrders(t *testing.T) {
 		}
 	}
 
-	cursor = client.ListOrders(ListOrdersParams{Status: "open", ProductID: "LTC-EUR"})
+	cursor = client.ListOrders(context.Background(), ListOrdersParams{Status: "open", ProductID: "LTC-EUR"})
 	for cursor.HasMore {
 		if err := cursor.NextPage(&orders); err != nil {
 			t.Error(err)
@@ -150,12 +151,12 @@ func TestCancelAllOrders(t *testing.T) {
 		for i := 0; i < 2; i++ {
 			order := Order{Price: "100000.00", Size: "1.00", Side: "sell", ProductID: pair}
 
-			if _, err := client.CreateOrder(&order); err != nil {
+			if _, err := client.CreateOrder(context.Background(), &order); err != nil {
 				t.Error(err)
 			}
 		}
 
-		orderIDs, err := client.CancelAllOrders(CancelAllOrdersParams{ProductID: pair})
+		orderIDs, err := client.CancelAllOrders(context.Background(), CancelAllOrdersParams{ProductID: pair})
 		if err != nil {
 			t.Error(err)
 		}

@@ -1,6 +1,7 @@
 package coinbasepro
 
 import (
+	"context"
 	"errors"
 	"testing"
 	"time"
@@ -16,12 +17,12 @@ func TestCreateReportAndStatus(t *testing.T) {
 		EndDate:   time.Now().Add(-24 * 2 * time.Hour),
 	}
 
-	report, err := client.CreateReport(&newReport)
+	report, err := client.CreateReport(context.Background(), &newReport)
 	if err != nil {
 		t.Error(err)
 	}
 
-	currentReport, err := client.GetReportStatus(report.ID)
+	currentReport, err := client.GetReportStatus(context.Background(), report.ID)
 	if err != nil {
 		t.Error(err)
 	}

@@ -1,13 +1,14 @@
 package coinbasepro
 
 import (
+	"context"
 	"errors"
 	"testing"
 )
 
 func TestGetProducts(t *testing.T) {
 	client := NewTestClient()
-	products, err := client.GetProducts()
+	products, err := client.GetProducts(context.Background())
 	if err != nil {
 		t.Error(err)
 	}
@@ -21,15 +22,15 @@ func TestGetProducts(t *testing.T) {
 
 func TestGetBook(t *testing.T) {
 	client := NewTestClient()
-	_, err := client.GetBook("BTC-USD", 1)
+	_, err := client.GetBook(context.Background(),"BTC-USD", 1)
 	if err != nil {
 		t.Error(err)
 	}
-	_, err = client.GetBook("BTC-USD", 2)
+	_, err = client.GetBook(context.Background(), "BTC-USD", 2)
 	if err != nil {
 		t.Error(err)
 	}
-	_, err = client.GetBook("BTC-USD", 3)
+	_, err = client.GetBook(context.Background(), "BTC-USD", 3)
 	if err != nil {
 		t.Error(err)
 	}
@@ -37,7 +38,7 @@ func TestGetBook(t *testing.T) {
 
 func TestGetTicker(t *testing.T) {
 	client := NewTestClient()
-	ticker, err := client.GetTicker("BTC-USD")
+	ticker, err := client.GetTicker(context.Background(), "BTC-USD")
 	if err != nil {
 		t.Error(err)
 	}
@@ -46,7 +47,7 @@ func TestGetTicker(t *testing.T) {
 		t.Error(errors.New("Zero value"))
 	}
 
-	ticker, err = client.GetTicker("ETH-BTC")
+	ticker, err = client.GetTicker(context.Background(), "ETH-BTC")
 	if err != nil {
 		t.Error(err)
 	}
@@ -60,7 +61,7 @@ func TestGetTicker(t *testing.T) {
 func TestListTrades(t *testing.T) {
 	var trades []Trade
 	client := NewTestClient()
-	cursor := client.ListTrades("BTC-USD")
+	cursor := client.ListTrades(context.Background(), "BTC-USD")
 
 	if err := cursor.NextPage(&trades); err != nil {
 		t.Error(err)
@@ -81,7 +82,7 @@ func TestGetHistoricRates(t *testing.T) {
 		Granularity: 3600,
 	}
 
-	historicRates, err := client.GetHistoricRates("BTC-USD", params)
+	historicRates, err := client.GetHistoricRates(context.Background(), "BTC-USD", params)
 	if err != nil {
 		t.Error(err)
 	}
@@ -94,7 +95,7 @@ func TestGetHistoricRates(t *testing.T) {
 
 func TestGetStats(t *testing.T) {
 	client := NewTestClient()
-	stats, err := client.GetStats("BTC-USD")
+	stats, err := client.GetStats(context.Background(), "BTC-USD")
 	if err != nil {
 		t.Error(err)
 	}

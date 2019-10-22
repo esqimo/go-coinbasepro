@@ -1,6 +1,7 @@
 package coinbasepro
 
 import (
+	"context"
 	"errors"
 	"testing"
 )
@@ -11,7 +12,7 @@ func TestListFills(t *testing.T) {
 	params := ListFillsParams{
 		ProductID: "BTC-USD",
 	}
-	cursor := client.ListFills(params)
+	cursor := client.ListFills(context.Background(), params)
 	for cursor.HasMore {
 		if err := cursor.NextPage(&fills); err != nil {
 			t.Error(err)

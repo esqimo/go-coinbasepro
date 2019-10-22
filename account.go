@@ -1,6 +1,7 @@
 package coinbasepro
 
 import (
+	"context"
 	"fmt"
 )
 
@@ -49,38 +50,36 @@ type ListHoldsParams struct {
 }
 
 // Client Funcs
-func (c *Client) GetAccounts() ([]Account, error) {
+func (c *Client) GetAccounts(ctx context.Context) ([]Account, error) {
 	var accounts []Account
-	_, err := c.Request("GET", "/accounts", nil, &accounts)
+	_, err := c.Request(ctx, "GET", "/accounts", nil, &accounts)
 
 	return accounts, err
 }
 
-func (c *Client) GetAccount(id string) (Account, error) {
+func (c *Client) GetAccount(ctx context.Context, id string) (Account, error) {
 	account := Account{}
 
 	url := fmt.Sprintf("/accounts/%s", id)
-	_, err := c.Request("GET", url, nil, &account)
+	_, err := c.Request(ctx, "GET", url, nil, &account)
 	return account, err
 }
 
-func (c *Client) ListAccountLedger(id string,
-	p ...GetAccountLedgerParams) *Cursor {
+func (c *Client) ListAccountLedger(ctx context.Context, id string, p ...GetAccountLedgerParams) *Cursor {
 	paginationParams := PaginationParams{}
 	if len(p) > 0 {
 		paginationParams = p[0].Pagination
 	}
 
-	return NewCursor(c, "GET", fmt.Sprintf("/accounts/%s/ledger", id),
+	return NewCursor(ctx, c, "GET", fmt.Sprintf("/accounts/%s/ledger", id),
 		&paginationParams)
 }
 
-func (c *Client) ListHolds(id string, p ...ListHoldsParams) *Cursor {
+func (c *Client) ListHolds(ctx context.Context, id string, p ...ListHoldsParams) *Cursor {
 	paginationParams := PaginationParams{}
 	if len(p) > 0 {
 		paginationParams = p[0].Pagination
 	}
 
-	return NewCursor(c, "GET", fmt.Sprintf("/accounts/%s/holds", id),
-		&paginationParams)
+	return NewCursor(ctx, c, "GET", fmt.Sprintf("/accounts/%s/holds", id), &paginationParams)
 }

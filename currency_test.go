@@ -1,13 +1,14 @@
 package coinbasepro
 
 import (
+	"context"
 	"errors"
 	"testing"
 )
 
 func TestGetCurrencies(t *testing.T) {
 	client := NewTestClient()
-	currencies, err := client.GetCurrencies()
+	currencies, err := client.GetCurrencies(context.Background())
 	if err != nil {
 		t.Error(err)
 	}

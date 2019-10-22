@@ -1,6 +1,7 @@
 package coinbasepro
 
 import (
+	"context"
 	"fmt"
 )
 
@@ -10,10 +11,10 @@ type Transfer struct {
 	CoinbaseAccountID string `json:"coinbase_account_id,string"`
 }
 
-func (c *Client) CreateTransfer(newTransfer *Transfer) (Transfer, error) {
+func (c *Client) CreateTransfer(ctx context.Context, transfer *Transfer) (Transfer, error) {
 	var savedTransfer Transfer
 
 	url := fmt.Sprintf("/transfers")
-	_, err := c.Request("POST", url, newTransfer, &savedTransfer)
+	_, err := c.Request(ctx, "POST", url, transfer, &savedTransfer)
 	return savedTransfer, err
 }

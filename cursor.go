@@ -1,6 +1,7 @@
 package coinbasepro
 
 import (
+	"context"
 	"fmt"
 )
 
@@ -11,16 +12,17 @@ type Cursor struct {
 	Params     interface{}
 	URL        string
 	HasMore    bool
+	ctx        context.Context
 }
 
-func NewCursor(client *Client, method, url string,
-	paginationParams *PaginationParams) *Cursor {
+func NewCursor(ctx context.Context, client *Client, method, url string, paginationParams *PaginationParams) *Cursor {
 	return &Cursor{
 		Client:     client,
 		Method:     method,
 		URL:        url,
 		Pagination: paginationParams,
 		HasMore:    true,
+		ctx:        ctx,
 	}
 }
 
@@ -30,7 +32,7 @@ func (c *Cursor) Page(i interface{}, direction string) error {
 		url = fmt.Sprintf("%s?%s", c.URL, c.Pagination.Encode(direction))
 	}
 
-	res, err := c.Client.Request(c.Method, url, c.Params, i)
+	res, err := c.Client.Request(c.ctx, c.Method, url, c.Params, i)
 	if err != nil {
 		c.HasMore = false
 		return err

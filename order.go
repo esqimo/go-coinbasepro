@@ -1,6 +1,7 @@
 package coinbasepro
 
 import (
+	"context"
 	"fmt"
 )
 
@@ -41,25 +42,25 @@ type ListOrdersParams struct {
 	Pagination PaginationParams
 }
 
-func (c *Client) CreateOrder(newOrder *Order) (Order, error) {
+func (c *Client) CreateOrder(ctx context.Context, order *Order) (Order, error) {
 	var savedOrder Order
 
-	if len(newOrder.Type) == 0 {
-		newOrder.Type = "limit"
+	if len(order.Type) == 0 {
+		order.Type = "limit"
 	}
 
 	url := fmt.Sprintf("/orders")
-	_, err := c.Request("POST", url, newOrder, &savedOrder)
+	_, err := c.Request(ctx, "POST", url, order, &savedOrder)
 	return savedOrder, err
 }
 
-func (c *Client) CancelOrder(id string) error {
+func (c *Client) CancelOrder(ctx context.Context, id string) error {
 	url := fmt.Sprintf("/orders/%s", id)
-	_, err := c.Request("DELETE", url, nil, nil)
+	_, err := c.Request(ctx, "DELETE", url, nil, nil)
 	return err
 }
 
-func (c *Client) CancelAllOrders(p ...CancelAllOrdersParams) ([]string, error) {
+func (c *Client) CancelAllOrders(ctx context.Context, p ...CancelAllOrdersParams) ([]string, error) {
 	var orderIDs []string
 	url := "/orders"
 
@@ -67,19 +68,19 @@ func (c *Client) CancelAllOrders(p ...CancelAllOrdersParams) ([]string, error) {
 		url = fmt.Sprintf("%s?product_id=%s", url, p[0].ProductID)
 	}
 
-	_, err := c.Request("DELETE", url, nil, &orderIDs)
+	_, err := c.Request(ctx, "DELETE", url, nil, &orderIDs)
 	return orderIDs, err
 }
 
-func (c *Client) GetOrder(id string) (Order, error) {
+func (c *Client) GetOrder(ctx context.Context, id string) (Order, error) {
 	var savedOrder Order
 
 	url := fmt.Sprintf("/orders/%s", id)
-	_, err := c.Request("GET", url, nil, &savedOrder)
+	_, err := c.Request(ctx, "GET", url, nil, &savedOrder)
 	return savedOrder, err
 }
 
-func (c *Client) ListOrders(p ...ListOrdersParams) *Cursor {
+func (c *Client) ListOrders(ctx context.Context, p ...ListOrdersParams) *Cursor {
 	paginationParams := PaginationParams{}
 	if len(p) > 0 {
 		paginationParams = p[0].Pagination
@@ -91,6 +92,5 @@ func (c *Client) ListOrders(p ...ListOrdersParams) *Cursor {
 		}
 	}
 
-	return NewCursor(c, "GET", fmt.Sprintf("/orders"),
-		&paginationParams)
+	return NewCursor(ctx, c, "GET", fmt.Sprintf("/orders"), &paginationParams)
 }
