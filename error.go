@@ -1,7 +1,8 @@
 package coinbasepro
 
 type Error struct {
-	Message string `json:"message"`
+	StatusCode int    `json:"-"`
+	Message    string `json:"message"`
 }
 
 func (e Error) Error() string {
