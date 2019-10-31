@@ -1,6 +1,7 @@
 package coinbasepro
 
 import (
+	"context"
 	"fmt"
 )
 
@@ -23,7 +24,7 @@ type ListFillsParams struct {
 	Pagination PaginationParams
 }
 
-func (c *Client) ListFills(p ListFillsParams) *Cursor {
+func (c *Client) ListFills(ctx context.Context, p ListFillsParams) *Cursor {
 	paginationParams := p.Pagination
 	if p.OrderID != "" {
 		paginationParams.AddExtraParam("order_id", p.OrderID)
@@ -32,6 +33,5 @@ func (c *Client) ListFills(p ListFillsParams) *Cursor {
 		paginationParams.AddExtraParam("product_id", p.ProductID)
 	}
 
-	return NewCursor(c, "GET", fmt.Sprintf("/fills"),
-		&paginationParams)
+	return NewCursor(ctx, c, "GET", fmt.Sprintf("/fills"), &paginationParams)
 }

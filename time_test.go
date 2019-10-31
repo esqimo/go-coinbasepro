@@ -1,6 +1,7 @@
 package coinbasepro
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"testing"
@@ -9,7 +10,7 @@ import (
 
 func TestGetTime(t *testing.T) {
 	client := NewTestClient()
-	serverTime, err := client.GetTime()
+	serverTime, err := client.GetTime(context.Background())
 	if err != nil {
 		t.Error(err)
 	}

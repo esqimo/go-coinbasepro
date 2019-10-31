@@ -2,6 +2,7 @@ package coinbasepro
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"math"
@@ -73,13 +74,13 @@ func (c *Client) UpdateConfig(config *ClientConfig) {
 	}
 }
 
-func (c *Client) Request(method string, url string,
-	params, result interface{}) (res *http.Response, err error) {
+func (c *Client) Request(
+	ctx context.Context, method string, url string, params, result interface{}) (res *http.Response, err error) {
 	for i := 0; i < c.RetryCount+1; i++ {
 		retryDuration := time.Duration((math.Pow(2, float64(i))-1)/2*1000) * time.Millisecond
 		time.Sleep(retryDuration)
 
-		res, err = c.request(method, url, params, result)
+		res, err = c.request(ctx, method, url, params, result)
 		if res != nil && res.StatusCode == 429 {
 			continue
 		} else {
@@ -90,7 +91,7 @@ func (c *Client) Request(method string, url string,
 	return res, err
 }
 
-func (c *Client) request(method string, url string,
+func (c *Client) request(ctx context.Context, method string, url string,
 	params, result interface{}) (res *http.Response, err error) {
 	var data []byte
 	body := bytes.NewReader(make([]byte, 0))
@@ -105,7 +106,7 @@ func (c *Client) request(method string, url string,
 	}
 
 	fullURL := fmt.Sprintf("%s%s", c.BaseURL, url)
-	req, err := http.NewRequest(method, fullURL, body)
+	req, err := http.NewRequestWithContext(ctx, method, fullURL, body)
 	if err != nil {
 		return res, err
 	}
@@ -142,13 +143,12 @@ func (c *Client) request(method string, url string,
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		defer res.Body.Close()
 		coinbaseError := Error{}
 		decoder := json.NewDecoder(res.Body)
 		if err := decoder.Decode(&coinbaseError); err != nil {
 			return res, err
 		}
-
+		coinbaseError.StatusCode = res.StatusCode
 		return res, error(coinbaseError)
 	}
 
