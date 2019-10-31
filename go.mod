@@ -1,4 +1,4 @@
-module github.com/esqimo/go-coinbasepro/v3
+module github.com/esqimo/go-coinbasepro
 
 require github.com/gorilla/websocket v1.4.0
 
