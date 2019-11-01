@@ -1,6 +1,10 @@
 Go Coinbase Pro [![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/preichenberger/go-coinbasepro) [![Build Status](https://travis-ci.org/preichenberger/go-coinbasepro.svg?branch=master)](https://travis-ci.org/preichenberger/go-coinbasepro)
 ========
 
+## Fork Notes
+
+This repo is being sliced and diced for our internal needs. Api is changing on the fly !!
+
 ## Summary
 
 Go client for [CoinBase Pro](https://pro.coinbase.com) formerly known as gdax
