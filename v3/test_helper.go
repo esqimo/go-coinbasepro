@@ -9,11 +9,8 @@ import (
 
 func NewTestClient() *Client {
 	client := NewClient()
-	client.UpdateConfig(&ClientConfig{
-		BaseURL: "https://api-public.sandbox.pro.coinbase.com",
-	})
+	client.BaseURL =  "https://api-public.sandbox.pro.coinbase.com"
 	client.RetryCount = 2
-
 	return client
 }
 

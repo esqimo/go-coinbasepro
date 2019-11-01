@@ -13,6 +13,7 @@ import (
 )
 
 type Client struct {
+	WsURL      string
 	BaseURL    string
 	Secret     string
 	Key        string
@@ -22,6 +23,7 @@ type Client struct {
 }
 
 type ClientConfig struct {
+	WsURL      string
 	BaseURL    string
 	Key        string
 	Passphrase string
@@ -29,13 +31,20 @@ type ClientConfig struct {
 }
 
 func NewClient() *Client {
+	const defaultBaseUrl = "https://api.pro.coinbase.com"
 	baseURL := os.Getenv("COINBASE_PRO_BASEURL")
 	if baseURL == "" {
-		baseURL = "https://api.pro.coinbase.com"
+		baseURL = defaultBaseUrl
+	}
+	wsURL := os.Getenv("COINBASE_PRO_WSURL")
+	// Only set the websocket url to a default i
+	if wsURL == "" && baseURL == defaultBaseUrl {
+		wsURL = "wss://ws-feed.pro.coinbase.com"
 	}
 
 	client := Client{
 		BaseURL:    baseURL,
+		WsURL:      wsURL,
 		Key:        os.Getenv("COINBASE_PRO_KEY"),
 		Passphrase: os.Getenv("COINBASE_PRO_PASSPHRASE"),
 		Secret:     os.Getenv("COINBASE_PRO_SECRET"),
@@ -45,33 +54,7 @@ func NewClient() *Client {
 		RetryCount: 0,
 	}
 
-	if os.Getenv("COINBASE_PRO_SANDBOX") == "1" {
-		client.UpdateConfig(&ClientConfig{
-			BaseURL: "https://api-public.sandbox.pro.coinbase.com",
-		})
-	}
-
 	return &client
-}
-
-func (c *Client) UpdateConfig(config *ClientConfig) {
-	baseURL := config.BaseURL
-	key := config.Key
-	passphrase := config.Passphrase
-	secret := config.Secret
-
-	if baseURL != "" {
-		c.BaseURL = baseURL
-	}
-	if key != "" {
-		c.Key = key
-	}
-	if passphrase != "" {
-		c.Passphrase = passphrase
-	}
-	if secret != "" {
-		c.Secret = secret
-	}
 }
 
 func (c *Client) Request(

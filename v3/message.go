@@ -55,14 +55,6 @@ type SnapshotEntry struct {
 	Size  string
 }
 
-type SignedMessage struct {
-	Message
-	Key        string `json:"key"`
-	Passphrase string `json:"passphrase"`
-	Timestamp  string `json:"timestamp"`
-	Signature  string `json:"signature"`
-}
-
 func (e *SnapshotEntry) UnmarshalJSON(data []byte) error {
 	var entry []string
 
