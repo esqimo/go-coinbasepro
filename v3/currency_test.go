@@ -2,8 +2,9 @@ package coinbasepro
 
 import (
 	"context"
-	"errors"
 	"testing"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 func TestGetCurrencies(t *testing.T) {
@@ -14,8 +15,6 @@ func TestGetCurrencies(t *testing.T) {
 	}
 
 	for _, c := range currencies {
-		if StructHasZeroValues(c) {
-			t.Error(errors.New("Zero value"))
-		}
+		spew.Dump(c)
 	}
 }
