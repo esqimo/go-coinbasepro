@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"testing"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 func TestGetProducts(t *testing.T) {
@@ -14,9 +16,7 @@ func TestGetProducts(t *testing.T) {
 	}
 
 	for _, p := range products {
-		if StructHasZeroValues(p) {
-			t.Error(errors.New("Zero value"))
-		}
+		spew.Dump(p)
 	}
 }
 

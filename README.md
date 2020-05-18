@@ -3,7 +3,7 @@ Go Coinbase Pro [![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)]
 
 ## Fork Notes
 
-This repo is being sliced and diced for our internal needs. Api is changing on the fly !!
+This repo is being sliced and diced for our internal needs. Api is changing on the fly !! The tests are not maintained. 
 
 ## Summary
 
